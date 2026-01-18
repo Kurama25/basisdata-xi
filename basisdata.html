@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Pembelajaran Basis Data</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        p, li {
+            text-align: justify;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .nav-btn {
+            transition: all 0.3s;
+        }
+        
+        .nav-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .code-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .output-box {
+            background: #064e3b;
+            color: #d1fae5;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .result-table {
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-top: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .result-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .result-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .result-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+            font-size: 0.85rem;
+        }
+        
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .result-table tr:hover {
+            background: #f9fafb;
+        }
+        
+        .result-info {
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-style: italic;
+            border-top: 1px solid #d1fae5;
+        }
+        
+        /* Responsive Design untuk Mobile */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            h2 {
+                font-size: 1.75rem !important;
+            }
+            
+            h3 {
+                font-size: 1.25rem !important;
+            }
+            
+            h4 {
+                font-size: 1.1rem !important;
+            }
+            
+            h5 {
+                font-size: 1rem !important;
+            }
+            
+            p, li, .text-lg {
+                font-size: 0.9rem !important;
+            }
+            
+            .code-box, .output-box {
+                font-size: 0.7rem !important;
+                padding: 0.75rem !important;
+            }
+            
+            .result-table th, .result-table td {
+                font-size: 0.7rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            .result-info {
+                font-size: 0.7rem !important;
+            }
+            
+            .nav-btn {
+                font-size: 0.65rem !important;
+                padding: 0.3rem 0.5rem !important;
+            }
+            
+            .bg-white.rounded-xl {
+                padding: 1.5rem !important;
+            }
+            
+            .max-w-6xl {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.25rem !important;
+            }
+            
+            h2 {
+                font-size: 1.5rem !important;
+            }
+            
+            h3 {
+                font-size: 1.1rem !important;
+            }
+            
+            p, li {
+                font-size: 0.85rem !important;
+            }
+            
+            .code-box, .output-box {
+                font-size: 0.65rem !important;
+                padding: 0.5rem !important;
+            }
+            
+            .result-table th, .result-table td {
+                font-size: 0.65rem !important;
+                padding: 0.4rem !important;
+            }
+            
+            .result-info {
+                font-size: 0.65rem !important;
+            }
+            
+            .nav-btn {
+                font-size: 0.75rem !important;
+                padding: 0.4rem 0.75rem !important;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-blue-500 to-purple-600">
+  <div class="w-full h-full overflow-auto"><!-- Header -->
+   <header class="bg-white shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-6">
+     <h1 id="main-title" class="text-3xl font-bold text-center text-blue-600">Media Pembelajaran Basis Data</h1>
+     <p id="main-subtitle" class="text-center text-gray-600 mt-2">Kelas XI SMK - Rekayasa Perangkat Lunak</p>
+    </div>
+   </header><!-- Navigation -->
+   <nav class="bg-white shadow-md sticky top-0 z-10">
+    <div class="max-w-6xl mx-auto px-4 py-3">
+     <div class="flex flex-wrap gap-2 justify-center"><button class="nav-btn active px-6 py-2 rounded-lg font-semibold" onclick="showSection('pengenalan')">Pengenalan</button> <button class="nav-btn px-6 py-2 rounded-lg font-semibold" onclick="showSection('ddl')">DDL</button> <button class="nav-btn px-6 py-2 rounded-lg font-semibold" onclick="showSection('dml')">DML</button> <button class="nav-btn px-6 py-2 rounded-lg font-semibold" onclick="showSection('dcl')">DCL</button>
+     </div>
+    </div>
+   </nav><!-- Content -->
+   <main class="max-w-6xl mx-auto px-4 py-8"><!-- Pengenalan Section -->
+    <div id="pengenalan" class="content-section active">
+     <div class="bg-white rounded-xl shadow-xl p-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">Mengenal SQL dan XAMPP</h2>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Apa itu SQL?</h3>
+       <p class="text-gray-700 text-lg leading-relaxed mb-3"><strong>SQL (Structured Query Language)</strong> adalah bahasa pemrograman standar yang digunakan untuk mengelola dan memanipulasi database relasional.</p>
+       <p class="text-gray-700 leading-relaxed">SQL memungkinkan pengguna untuk membuat, membaca, memperbarui, dan menghapus data dalam database. SQL dikembangkan oleh IBM pada tahun 1970-an dan menjadi standar ANSI pada tahun 1986.</p>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Apa itu XAMPP?</h3>
+       <p class="text-gray-700 leading-relaxed mb-4"><strong>XAMPP</strong> adalah paket perangkat lunak web server gratis dan open source yang dikembangkan oleh Apache Friends. XAMPP menyediakan lingkungan pengembangan lokal yang mudah untuk membuat dan menguji aplikasi web sebelum dipublikasikan ke server produksi.</p>
+       <div class="bg-orange-100 border-l-4 border-orange-500 p-6 rounded-lg my-6">
+        <div class="flex items-center justify-center">
+         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTI847B-vfE07rVYunS8ke9vSG89NYwXzmvw&s" alt="logo xampp" style="border-radius:20px">
+        </div>
+       </div>
+       <h4 class="text-xl font-bold text-gray-800 mb-3">Kepanjangan XAMPP:</h4>
+       <div class="space-y-4 mb-4">
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
+         <h5 class="font-bold text-gray-800 mb-2">X - Cross Platform</h5>
+         <p class="text-gray-700">XAMPP dapat berjalan di berbagai sistem operasi seperti Windows, Linux, dan macOS. Ini memberikan fleksibilitas bagi developer untuk bekerja di platform yang mereka sukai tanpa perlu mengubah konfigurasi aplikasi.</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-red-500">
+         <h5 class="font-bold text-gray-800 mb-2">A - Apache</h5>
+         <p class="text-gray-700">Apache HTTP Server adalah web server open source yang paling populer di dunia. Apache bertugas untuk menerima permintaan HTTP dari browser dan mengirimkan halaman web yang diminta. Apache mendukung berbagai bahasa pemrograman dan modul ekstensi.</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-green-500">
+         <h5 class="font-bold text-gray-800 mb-2">M - MySQL / MariaDB</h5>
+         <p class="text-gray-700">MySQL (atau MariaDB pada versi terbaru) adalah sistem manajemen database relasional yang digunakan untuk menyimpan dan mengelola data aplikasi web. MySQL menggunakan SQL (Structured Query Language) untuk operasi database seperti membuat, membaca, mengubah, dan menghapus data.</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-purple-500">
+         <h5 class="font-bold text-gray-800 mb-2">P - PHP</h5>
+         <p class="text-gray-700">PHP (Hypertext Preprocessor) adalah bahasa pemrograman server-side yang digunakan untuk membuat halaman web dinamis. PHP dapat berinteraksi dengan database MySQL dan menghasilkan HTML yang dikirim ke browser pengguna. PHP sangat populer untuk pengembangan web karena mudah dipelajari dan memiliki komunitas yang besar.</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-yellow-500">
+         <h5 class="font-bold text-gray-800 mb-2">P - Perl</h5>
+         <p class="text-gray-700">Perl adalah bahasa pemrograman yang serbaguna dan kuat untuk pengembangan web. Meskipun tidak sepopuler PHP, Perl masih digunakan untuk scripting CGI dan pemrosesan teks. XAMPP menyertakan Perl untuk memberikan opsi tambahan bagi developer.</p>
+        </div>
+       </div>
+       <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg mb-4">
+        <p class="text-gray-700"><strong>Keunggulan XAMPP:</strong></p>
+        <ul class="mt-2 space-y-1 text-gray-700">
+         <li>• Instalasi mudah dan cepat (one-click installation)</li>
+         <li>• Gratis dan open source</li>
+         <li>• Terintegrasi dengan phpMyAdmin untuk manajemen database visual</li>
+         <li>• Cocok untuk pembelajaran dan pengembangan lokal</li>
+         <li>• Dokumentasi lengkap dan komunitas aktif</li>
+        </ul>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">Cara Instalasi XAMPP</h3>
+       <div class="space-y-4">
+        <div class="flex gap-4 items-start">
+         <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+          1
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800 mb-1">Download XAMPP</h4>
+          <p class="text-gray-700">Kunjungi <a href="https://www.apachefriends.org" target="_blank" class="text-blue-600 underline">https://www.apachefriends.org</a> dan download sesuai sistem operasi Anda.</p>
+         </div>
+        </div>
+        <div class="flex gap-4 items-start">
+         <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+          2
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800 mb-1">Jalankan Installer</h4>
+          <p class="text-gray-700">Klik file installer. Pada Windows, klik kanan dan pilih "Run as Administrator".</p>
+         </div>
+        </div>
+        <div class="flex gap-4 items-start">
+         <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+          3
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800 mb-1">Pilih Komponen</h4>
+          <p class="text-gray-700">Pastikan Apache, MySQL, PHP, dan phpMyAdmin tercentang.</p>
+         </div>
+        </div>
+        <div class="flex gap-4 items-start">
+         <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+          4
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800 mb-1">Pilih Lokasi Instalasi</h4>
+          <p class="text-gray-700">Pilih folder instalasi. Default: C:\xampp</p>
+         </div>
+        </div>
+        <div class="flex gap-4 items-start">
+         <div class="bg-blue-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg flex-shrink-0">
+          5
+         </div>
+         <div>
+          <h4 class="font-bold text-gray-800 mb-1">Selesai</h4>
+          <p class="text-gray-700">Tunggu proses instalasi dan jalankan XAMPP Control Panel.</p>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Mengakses MySQL via Command Prompt</h3>
+       <p class="text-gray-700 mb-4">Untuk mengakses MySQL melalui Command Prompt:</p>
+       <div class="code-box mb-2">
+        cd C:\xampp\mysql\bin
+       </div>
+       <div class="code-box">
+        mysql -u root -p
+       </div>
+       <div class="output-box">
+        Welcome to the MySQL monitor. Commands end with ; or \g. Your MySQL connection id is 8 Server version: 8.0.30 MySQL Community Server - GPL Type 'help;' or '\h' for help. mysql&gt;
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Kelebihan MySQL</h3>
+       <ul class="space-y-2 text-gray-700">
+        <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> Open Source dan Gratis</li>
+        <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> Performa Tinggi</li>
+        <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> Skalabilitas Baik</li>
+        <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> Cross-Platform</li>
+        <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> Keamanan Kuat</li>
+        <li class="flex gap-2"><span class="text-green-600 font-bold">✓</span> Komunitas Besar</li>
+       </ul>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Kekurangan MySQL</h3>
+       <ul class="space-y-2 text-gray-700">
+        <li class="flex gap-2"><span class="text-red-600 font-bold">✗</span> Keterbatasan fitur advanced</li>
+        <li class="flex gap-2"><span class="text-red-600 font-bold">✗</span> Stabilitas pada database sangat besar</li>
+        <li class="flex gap-2"><span class="text-red-600 font-bold">✗</span> Support terbatas untuk SQL Standard penuh</li>
+       </ul>
+      </div>
+      <div class="bg-gray-100 border-l-4 border-gray-500 p-4 rounded">
+       <p class="text-sm text-gray-700 font-semibold mb-2">📚 Sumber Materi:</p>
+       <ul class="text-sm text-gray-700 space-y-1">
+        <li>• Oracle Corporation. (2024). <em>MySQL 8.0 Reference Manual</em>. <a href="https://dev.mysql.com/doc/" target="_blank" class="text-blue-600 underline">https://dev.mysql.com/doc/</a></li>
+        <li>• Apache Friends. (2024). <em>XAMPP Documentation</em>. <a href="https://www.apachefriends.org/docs/" target="_blank" class="text-blue-600 underline">https://www.apachefriends.org/docs/</a></li>
+        <li>• Welling, L., &amp; Thomson, L. (2016). <em>PHP and MySQL Web Development (5th Edition)</em>. Addison-Wesley Professional.</li>
+       </ul>
+      </div>
+     </div>
+    </div><!-- DDL Section -->
+    <div id="ddl" class="content-section">
+     <div class="bg-white rounded-xl shadow-xl p-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">Data Definition Language (DDL)</h2>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Pengertian DDL</h3>
+       <p class="text-gray-700 leading-relaxed mb-4"><strong>Data Definition Language (DDL)</strong> adalah subset dari SQL yang digunakan untuk mendefinisikan dan mengelola struktur database. DDL memungkinkan kita untuk membuat, mengubah, dan menghapus objek database seperti database, tabel, indeks, dan view.</p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah DDL bersifat auto-commit, artinya perubahan yang dilakukan akan langsung tersimpan secara permanen ke dalam database dan tidak dapat di-rollback (dibatalkan).</p>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Pengelompokan SQL</h3>
+       <div class="grid md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-blue-100 p-4 rounded-lg border-2 border-blue-300">
+         <h4 class="font-bold text-blue-800 mb-2">DDL</h4>
+         <p class="text-sm text-gray-700 mb-2"><strong>Data Definition Language</strong></p>
+         <p class="text-xs text-gray-600">CREATE, ALTER, DROP, RENAME</p>
+        </div>
+        <div class="bg-green-100 p-4 rounded-lg border-2 border-green-300">
+         <h4 class="font-bold text-green-800 mb-2">DML</h4>
+         <p class="text-sm text-gray-700 mb-2"><strong>Data Manipulation Language</strong></p>
+         <p class="text-xs text-gray-600">INSERT, SELECT, UPDATE, DELETE</p>
+        </div>
+        <div class="bg-purple-100 p-4 rounded-lg border-2 border-purple-300">
+         <h4 class="font-bold text-purple-800 mb-2">DCL</h4>
+         <p class="text-sm text-gray-700 mb-2"><strong>Data Control Language</strong></p>
+         <p class="text-xs text-gray-600">GRANT, REVOKE</p>
+        </div>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">1. Membuat Database (CREATE DATABASE)</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">CREATE DATABASE</code> digunakan untuk membuat database baru dalam sistem MySQL. Database adalah wadah yang menampung kumpulan tabel dan objek database lainnya. Sebelum membuat tabel, kita harus membuat database terlebih dahulu.</p>
+       <p class="text-gray-700 mb-3"><strong>Contoh:</strong></p>
+       <div class="code-box">
+        CREATE DATABASE db_perpustakaan;
+       </div>
+       <div class="output-box">
+        Query OK, 1 row affected (0.02 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>Menampilkan Semua Database (SHOW DATABASES):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">SHOW DATABASES</code> menampilkan daftar semua database yang ada dalam sistem MySQL.</p>
+       <div class="code-box">
+        SHOW DATABASES;
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>Database</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>db_perpustakaan</td>
+          </tr>
+          <tr>
+           <td>information_schema</td>
+          </tr>
+          <tr>
+           <td>mysql</td>
+          </tr>
+          <tr>
+           <td>performance_schema</td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         4 rows in set (0.01 sec)
+        </div>
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>Menggunakan Database (USE):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">USE</code> digunakan untuk memilih database yang akan digunakan untuk operasi selanjutnya.</p>
+       <div class="code-box">
+        USE db_perpustakaan;
+       </div>
+       <div class="output-box">
+        Database changed
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">2. Membuat Tabel (CREATE TABLE)</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">CREATE TABLE</code> digunakan untuk membuat tabel baru dalam database. Tabel terdiri dari kolom-kolom yang memiliki nama dan tipe data. Setiap kolom dapat memiliki constraint (aturan) seperti PRIMARY KEY, NOT NULL, DEFAULT, dan lainnya.</p>
+       <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+        <p class="text-gray-700 font-semibold mb-2">Komponen CREATE TABLE:</p>
+        <ul class="text-sm text-gray-700 space-y-1">
+         <li>• <strong>PRIMARY KEY:</strong> Kolom yang menjadi identitas unik setiap baris</li>
+         <li>• <strong>AUTO_INCREMENT:</strong> Nilai otomatis bertambah untuk setiap record baru</li>
+         <li>• <strong>NOT NULL:</strong> Kolom harus diisi, tidak boleh kosong</li>
+         <li>• <strong>DEFAULT:</strong> Nilai default jika tidak diisi</li>
+        </ul>
+       </div>
+       <p class="text-gray-700 mb-3"><strong>Contoh:</strong></p>
+       <div class="code-box">
+        CREATE TABLE buku ( id_buku INT PRIMARY KEY AUTO_INCREMENT, judul VARCHAR(100) NOT NULL, pengarang VARCHAR(50), penerbit VARCHAR(50), tahun_terbit INT, stok INT DEFAULT 0 );
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.05 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>Melihat Struktur Tabel (DESCRIBE / DESC):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">DESC</code> atau <code class="bg-gray-200 px-2 py-1 rounded">DESCRIBE</code> menampilkan struktur tabel beserta informasi setiap kolom.</p>
+       <div class="code-box">
+        DESC buku;
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>Field</th>
+           <th>Type</th>
+           <th>Null</th>
+           <th>Key</th>
+           <th>Default</th>
+           <th>Extra</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>id_buku</td>
+           <td>int</td>
+           <td>NO</td>
+           <td>PRI</td>
+           <td>NULL</td>
+           <td>auto_increment</td>
+          </tr>
+          <tr>
+           <td>judul</td>
+           <td>varchar(100)</td>
+           <td>NO</td>
+           <td></td>
+           <td>NULL</td>
+           <td></td>
+          </tr>
+          <tr>
+           <td>pengarang</td>
+           <td>varchar(50)</td>
+           <td>YES</td>
+           <td></td>
+           <td>NULL</td>
+           <td></td>
+          </tr>
+          <tr>
+           <td>penerbit</td>
+           <td>varchar(50)</td>
+           <td>YES</td>
+           <td></td>
+           <td>NULL</td>
+           <td></td>
+          </tr>
+          <tr>
+           <td>tahun_terbit</td>
+           <td>int</td>
+           <td>YES</td>
+           <td></td>
+           <td>NULL</td>
+           <td></td>
+          </tr>
+          <tr>
+           <td>stok</td>
+           <td>int</td>
+           <td>YES</td>
+           <td></td>
+           <td>0</td>
+           <td></td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         6 rows in set (0.01 sec)
+        </div>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">3. Mengubah Struktur Tabel (ALTER TABLE)</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">ALTER TABLE</code> digunakan untuk mengubah struktur tabel yang sudah ada. Dengan ALTER TABLE, kita dapat menambah kolom baru, mengubah tipe data kolom, mengubah nama kolom, atau menghapus kolom.</p>
+       <p class="text-gray-700 mb-3 mt-6"><strong>a. Menambahkan Kolom (ADD COLUMN):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Digunakan untuk menambahkan kolom baru ke dalam tabel yang sudah ada.</p>
+       <div class="code-box">
+        ALTER TABLE buku ADD COLUMN kategori VARCHAR(30);
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.03 sec) Records: 0 Duplicates: 0 Warnings: 0
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>b. Mengubah Tipe Data Kolom (MODIFY COLUMN):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Digunakan untuk mengubah tipe data atau constraint dari kolom yang sudah ada.</p>
+       <div class="code-box">
+        ALTER TABLE buku MODIFY COLUMN stok SMALLINT;
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.04 sec) Records: 0 Duplicates: 0 Warnings: 0
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>c. Menghapus Kolom (DROP COLUMN):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Digunakan untuk menghapus kolom dari tabel secara permanen beserta seluruh datanya.</p>
+       <div class="code-box">
+        ALTER TABLE buku DROP COLUMN kategori;
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.03 sec) Records: 0 Duplicates: 0 Warnings: 0
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">4. Menghapus Tabel (DROP TABLE)</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">DROP TABLE</code> digunakan untuk menghapus tabel beserta seluruh struktur dan datanya secara permanen dari database. Operasi ini tidak dapat di-undo (dibatalkan), jadi harus digunakan dengan sangat hati-hati.</p>
+       <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded mb-4">
+        <p class="text-red-700 font-semibold">⚠️ Peringatan: DROP TABLE akan menghapus tabel dan semua data secara permanen! Pastikan Anda sudah membackup data penting sebelum menjalankan perintah ini.</p>
+       </div>
+       <p class="text-gray-700 mb-3"><strong>Contoh:</strong></p>
+       <div class="code-box">
+        DROP TABLE buku;
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.02 sec)
+       </div>
+      </div>
+      <div class="bg-gray-100 border-l-4 border-gray-500 p-4 rounded">
+       <p class="text-sm text-gray-700 font-semibold mb-2">📚 Sumber Materi:</p>
+       <ul class="text-sm text-gray-700 space-y-1">
+        <li>• Oracle Corporation. (2024). <em>MySQL 8.0 Reference Manual - Data Definition Statements</em>. <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-data-definition-statements.html" target="_blank" class="text-blue-600 underline">dev.mysql.com/doc</a></li>
+        <li>• Dubois, P. (2013). <em>MySQL (5th Edition)</em>. Addison-Wesley Professional.</li>
+       </ul>
+      </div>
+     </div>
+    </div><!-- DML Section -->
+    <div id="dml" class="content-section">
+     <div class="bg-white rounded-xl shadow-xl p-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">Data Manipulation Language (DML)</h2>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-3">Pengertian DML</h3>
+       <p class="text-gray-700 leading-relaxed mb-4"><strong>Data Manipulation Language (DML)</strong> adalah subset dari SQL yang digunakan untuk memanipulasi data dalam tabel database. DML mencakup operasi untuk menambahkan (INSERT), mengambil (SELECT), mengubah (UPDATE), dan menghapus (DELETE) data.</p>
+       <p class="text-gray-700 leading-relaxed mb-4">Berbeda dengan DDL yang mengubah struktur database, DML bekerja pada level data di dalam tabel. Operasi DML dapat di-rollback (dibatalkan) jika menggunakan transaksi.</p>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">1. Perintah INSERT</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">INSERT INTO</code> digunakan untuk menambahkan data baru (record/baris) ke dalam tabel. Ada dua cara penggunaan INSERT: dengan menyebutkan nama kolom atau tanpa menyebutkan nama kolom.</p>
+       <p class="text-gray-700 mb-3 mt-6"><strong>a. INSERT dengan Menyebutkan Kolom:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Metode ini lebih aman dan disarankan karena kita bisa memilih kolom mana saja yang akan diisi. Kolom yang tidak disebutkan akan diisi dengan nilai DEFAULT atau NULL.</p>
+       <div class="code-box">
+        INSERT INTO buku (judul, pengarang, penerbit, tahun_terbit, stok) VALUES ('Laskar Pelangi', 'Andrea Hirata', 'Bentang Pustaka', 2005, 15);
+       </div>
+       <div class="output-box">
+        Query OK, 1 row affected (0.01 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>b. INSERT Multiple Rows (Banyak Data Sekaligus):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Untuk efisiensi, kita bisa menambahkan beberapa baris data sekaligus dalam satu perintah INSERT.</p>
+       <div class="code-box">
+        INSERT INTO buku (judul, pengarang, stok) VALUES ('Bumi Manusia', 'Pramoedya Ananta Toer', 10), ('Perahu Kertas', 'Dee Lestari', 12), ('5 cm', 'Donny Dhirgantoro', 20);
+       </div>
+       <div class="output-box">
+        Query OK, 3 rows affected (0.02 sec) Records: 3 Duplicates: 0 Warnings: 0
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">2. Perintah SELECT</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">SELECT</code> digunakan untuk mengambil dan menampilkan data dari tabel. SELECT adalah perintah yang paling sering digunakan dalam SQL. Kita bisa memfilter data dengan klausa WHERE, mengurutkan dengan ORDER BY, dan membatasi jumlah data dengan LIMIT.</p>
+       <p class="text-gray-700 mb-3 mt-6"><strong>a. Menampilkan Semua Data:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Menggunakan asterisk (*) untuk menampilkan semua kolom dari tabel.</p>
+       <div class="code-box">
+        SELECT * FROM buku;
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>id_buku</th>
+           <th>judul</th>
+           <th>pengarang</th>
+           <th>penerbit</th>
+           <th>tahun_terbit</th>
+           <th>stok</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>1</td>
+           <td>Laskar Pelangi</td>
+           <td>Andrea Hirata</td>
+           <td>Bentang Pustaka</td>
+           <td>2005</td>
+           <td>15</td>
+          </tr>
+          <tr>
+           <td>2</td>
+           <td>Bumi Manusia</td>
+           <td>Pramoedya A.T.</td>
+           <td>Hasta Mitra</td>
+           <td>1980</td>
+           <td>10</td>
+          </tr>
+          <tr>
+           <td>3</td>
+           <td>Perahu Kertas</td>
+           <td>Dee Lestari</td>
+           <td>Bentang Pustaka</td>
+           <td>2009</td>
+           <td>12</td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         3 rows in set (0.00 sec)
+        </div>
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>b. Menampilkan Kolom Tertentu:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Kita bisa memilih kolom-kolom spesifik yang ingin ditampilkan untuk efisiensi query.</p>
+       <div class="code-box">
+        SELECT judul, pengarang FROM buku;
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>judul</th>
+           <th>pengarang</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>Laskar Pelangi</td>
+           <td>Andrea Hirata</td>
+          </tr>
+          <tr>
+           <td>Bumi Manusia</td>
+           <td>Pramoedya A.T.</td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         2 rows in set (0.00 sec)
+        </div>
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>c. Menampilkan Data dengan Kondisi (WHERE):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Klausa <code class="bg-gray-200 px-2 py-1 rounded">WHERE</code> digunakan untuk memfilter data berdasarkan kondisi tertentu. Hanya baris yang memenuhi kondisi yang akan ditampilkan.</p>
+       <div class="code-box">
+        SELECT * FROM buku WHERE pengarang = 'Andrea Hirata';
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>id_buku</th>
+           <th>judul</th>
+           <th>pengarang</th>
+           <th>penerbit</th>
+           <th>tahun_terbit</th>
+           <th>stok</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>1</td>
+           <td>Laskar Pelangi</td>
+           <td>Andrea Hirata</td>
+           <td>Bentang Pustaka</td>
+           <td>2005</td>
+           <td>15</td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         1 row in set (0.00 sec)
+        </div>
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>d. Pencarian dengan LIKE (Pattern Matching):</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Operator <code class="bg-gray-200 px-2 py-1 rounded">LIKE</code> digunakan untuk mencari data dengan pola tertentu. Simbol % mewakili nol atau lebih karakter, sedangkan _ mewakili satu karakter.</p>
+       <div class="code-box">
+        SELECT * FROM buku WHERE judul LIKE '%Pelangi%';
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>id_buku</th>
+           <th>judul</th>
+           <th>pengarang</th>
+           <th>penerbit</th>
+           <th>tahun_terbit</th>
+           <th>stok</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>1</td>
+           <td>Laskar Pelangi</td>
+           <td>Andrea Hirata</td>
+           <td>Bentang Pustaka</td>
+           <td>2005</td>
+           <td>15</td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         1 row in set (0.00 sec)
+        </div>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">3. Perintah UPDATE</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">UPDATE</code> digunakan untuk mengubah data yang sudah ada dalam tabel. Klausa WHERE sangat penting untuk menentukan baris mana yang akan diubah. Tanpa WHERE, semua baris dalam tabel akan diupdate!</p>
+       <p class="text-gray-700 mb-3 mt-6"><strong>a. Update Data Tertentu:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Mengubah data pada baris tertentu berdasarkan kondisi WHERE.</p>
+       <div class="code-box">
+        UPDATE buku SET stok = 25 WHERE judul = 'Laskar Pelangi';
+       </div>
+       <div class="output-box">
+        Query OK, 1 row affected (0.01 sec) Rows matched: 1 Changed: 1 Warnings: 0
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>b. Update Multiple Kolom:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Kita bisa mengubah beberapa kolom sekaligus dalam satu perintah UPDATE.</p>
+       <div class="code-box">
+        UPDATE buku SET stok = 30, penerbit = 'Gramedia' WHERE id_buku = 3;
+       </div>
+       <div class="output-box">
+        Query OK, 1 row affected (0.01 sec) Rows matched: 1 Changed: 1 Warnings: 0
+       </div>
+       <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded mt-4">
+        <p class="text-yellow-800 font-semibold">⚠️ Peringatan: Selalu gunakan WHERE saat UPDATE. Tanpa WHERE, semua baris dalam tabel akan diubah!</p>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">4. Perintah DELETE</h3>
+       <p class="text-gray-700 mb-3"><strong>Penjelasan:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Perintah <code class="bg-gray-200 px-2 py-1 rounded">DELETE</code> digunakan untuk menghapus data dari tabel. Seperti UPDATE, klausa WHERE sangat penting untuk menentukan baris mana yang akan dihapus. DELETE hanya menghapus data, bukan struktur tabel.</p>
+       <p class="text-gray-700 mb-3 mt-6"><strong>a. Delete Data Tertentu:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Menghapus baris data berdasarkan kondisi tertentu.</p>
+       <div class="code-box">
+        DELETE FROM buku WHERE id_buku = 5;
+       </div>
+       <div class="output-box">
+        Query OK, 1 row affected (0.01 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>b. Delete dengan Kondisi Kompleks:</strong></p>
+       <p class="text-gray-700 leading-relaxed mb-4">Kita bisa menggunakan berbagai operator perbandingan dalam kondisi WHERE.</p>
+       <div class="code-box">
+        DELETE FROM buku WHERE tahun_terbit &lt; 2000;
+       </div>
+       <div class="output-box">
+        Query OK, 1 row affected (0.01 sec)
+       </div>
+       <div class="bg-red-100 border-l-4 border-red-500 p-4 rounded mt-4">
+        <p class="text-red-700 font-semibold">⚠️ Peringatan: DELETE adalah operasi permanen dan tidak dapat di-undo! Selalu gunakan WHERE untuk menghindari penghapusan semua data. Backup data penting sebelum melakukan DELETE.</p>
+       </div>
+      </div>
+      <div class="bg-gray-100 border-l-4 border-gray-500 p-4 rounded">
+       <p class="text-sm text-gray-700 font-semibold mb-2">📚 Sumber Materi:</p>
+       <ul class="text-sm text-gray-700 space-y-1">
+        <li>• Oracle Corporation. (2024). <em>MySQL 8.0 Reference Manual - Data Manipulation Statements</em>. <a href="https://dev.mysql.com/doc/refman/8.0/en/sql-data-manipulation-statements.html" target="_blank" class="text-blue-600 underline">dev.mysql.com/doc</a></li>
+        <li>• Forta, B. (2012). <em>SQL in 10 Minutes, Sams Teach Yourself (4th Edition)</em>. Sams Publishing.</li>
+       </ul>
+      </div>
+     </div>
+    </div><!-- DCL Section -->
+    <div id="dcl" class="content-section">
+     <div class="bg-white rounded-xl shadow-xl p-8">
+      <h2 class="text-3xl font-bold text-gray-800 mb-6">Data Control Language (DCL)</h2>
+      <p class="text-gray-700 text-lg mb-6"><strong>DCL</strong> digunakan untuk mengontrol hak akses pengguna terhadap database. Perintah utama: <strong>GRANT</strong> dan <strong>REVOKE</strong>.</p>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">Perintah GRANT</h3>
+       <p class="text-gray-700 mb-3"><strong>1. Membuat User Baru</strong></p>
+       <div class="code-box">
+        CREATE USER 'pustakawan'@'localhost' IDENTIFIED BY 'password123';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.02 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>2. Memberikan Privilege SELECT</strong></p>
+       <div class="code-box">
+        GRANT SELECT ON db_perpustakaan.buku TO 'pustakawan'@'localhost';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>3. Memberikan Multiple Privileges</strong></p>
+       <div class="code-box">
+        GRANT SELECT, INSERT, UPDATE ON db_perpustakaan.buku TO 'pustakawan'@'localhost';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>4. Memberikan Semua Privilege</strong></p>
+       <div class="code-box">
+        GRANT ALL PRIVILEGES ON db_perpustakaan.* TO 'admin_perpus'@'localhost';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+       <div class="bg-green-100 border-l-4 border-green-500 p-4 rounded mt-6">
+        <p class="font-semibold mb-2">Jenis-jenis Privilege:</p>
+        <ul class="text-sm space-y-1">
+         <li><strong>SELECT:</strong> Membaca data</li>
+         <li><strong>INSERT:</strong> Menambah data</li>
+         <li><strong>UPDATE:</strong> Mengubah data</li>
+         <li><strong>DELETE:</strong> Menghapus data</li>
+         <li><strong>ALL PRIVILEGES:</strong> Semua hak akses</li>
+        </ul>
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">Perintah REVOKE</h3>
+       <p class="text-gray-700 mb-3"><strong>1. Mencabut Privilege Tertentu</strong></p>
+       <div class="code-box">
+        REVOKE INSERT ON db_perpustakaan.buku FROM 'pustakawan'@'localhost';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>2. Mencabut Semua Privilege</strong></p>
+       <div class="code-box">
+        REVOKE ALL PRIVILEGES ON db_perpustakaan.* FROM 'pustakawan'@'localhost';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>3. Menghapus User</strong></p>
+       <div class="code-box">
+        DROP USER 'pustakawan'@'localhost';
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+      </div>
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold text-gray-800 mb-4">Melihat Privilege</h3>
+       <div class="code-box">
+        SHOW GRANTS FOR 'pustakawan'@'localhost';
+       </div>
+       <div class="result-table">
+        <table>
+         <thead>
+          <tr>
+           <th>Grants for pustakawan@localhost</th>
+          </tr>
+         </thead>
+         <tbody>
+          <tr>
+           <td>GRANT USAGE ON *.* TO `pustakawan`@`localhost`</td>
+          </tr>
+          <tr>
+           <td>GRANT SELECT ON `db_perpustakaan`.`buku` TO `pustakawan`@`localhost`</td>
+          </tr>
+         </tbody>
+        </table>
+        <div class="result-info">
+         2 rows in set (0.00 sec)
+        </div>
+       </div>
+       <p class="text-gray-700 mb-3 mt-6"><strong>Menerapkan Perubahan:</strong></p>
+       <div class="code-box">
+        FLUSH PRIVILEGES;
+       </div>
+       <div class="output-box">
+        Query OK, 0 rows affected (0.01 sec)
+       </div>
+      </div>
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded mb-8">
+       <p class="font-semibold mb-2">💡 Best Practices Keamanan:</p>
+       <ul class="text-sm space-y-1">
+        <li>• Berikan hanya privilege yang diperlukan</li>
+        <li>• Gunakan password yang kuat</li>
+        <li>• Review privilege secara berkala</li>
+        <li>• Jangan gunakan user root untuk aplikasi</li>
+       </ul>
+      </div>
+      <div class="bg-gray-100 border-l-4 border-gray-500 p-4 rounded">
+       <p class="text-sm text-gray-700 font-semibold mb-2">📚 Sumber Materi:</p>
+       <ul class="text-sm text-gray-700 space-y-1">
+        <li>• Oracle Corporation. (2024). <em>MySQL 8.0 Reference Manual - Account Management Statements</em>. <a href="https://dev.mysql.com/doc/refman/8.0/en/account-management-statements.html" target="_blank" class="text-blue-600 underline">dev.mysql.com/doc</a></li>
+        <li>• Schwartz, B., Zaitsev, P., &amp; Tkachenko, V. (2012). <em>High Performance MySQL (3rd Edition)</em>. O'Reilly Media.</li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </main><!-- Footer -->
+   <footer class="bg-gray-900 text-white text-center py-6 mt-8">
+    <p>© 2024 Media Pembelajaran Basis Data - Kelas XI RPL</p>
+   </footer>
+  </div>
+  <script>
+        const defaultConfig = {
+            app_title: "Media Pembelajaran Basis Data",
+            subtitle: "Kelas XI SMK - Rekayasa Perangkat Lunak"
+        };
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function onConfigChange(config) {
+            const mainTitle = document.getElementById('main-title');
+            const mainSubtitle = document.getElementById('main-subtitle');
+            
+            if (mainTitle) {
+                mainTitle.textContent = config.app_title || defaultConfig.app_title;
+            }
+            if (mainSubtitle) {
+                mainSubtitle.textContent = config.subtitle || defaultConfig.subtitle;
+            }
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities: (config) => ({
+                    recolorables: [],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["app_title", config.app_title || defaultConfig.app_title],
+                    ["subtitle", config.subtitle || defaultConfig.subtitle]
+                ])
+            });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bfed4c7e6b4ce67',t:'MTc2ODc0NzA1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
