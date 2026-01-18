@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LKPD Basis Data - SQL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        p, li {
+            text-align: justify;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                background: white !important;
+            }
+            
+            .print-break {
+                page-break-before: always;
+            }
+        }
+        
+        /* Responsive Design untuk Mobile */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem !important;
+            }
+            
+            h2 {
+                font-size: 1.75rem !important;
+            }
+            
+            h3 {
+                font-size: 1.25rem !important;
+            }
+            
+            h4 {
+                font-size: 1.1rem !important;
+            }
+            
+            p, li, .text-lg {
+                font-size: 0.9rem !important;
+            }
+            
+            .bg-white.rounded-xl {
+                padding: 1.5rem !important;
+            }
+            
+            .max-w-5xl {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-orange-400 to-pink-500">
+  <div class="w-full h-full overflow-auto"><!-- Header -->
+   <header class="bg-white shadow-lg no-print">
+    <div class="max-w-5xl mx-auto px-4 py-6">
+     <h1 class="text-3xl font-bold text-center text-orange-600">📝 Lembar Kerja Peserta Didik</h1>
+     <p class="text-center text-gray-600 mt-2">Basis Data - SQL (DDL &amp; DML)</p>
+     <div class="text-center mt-4"><button onclick="window.print()" class="bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"> 🖨️ Print / Download PDF </button> <a href="index.html" class="ml-4 bg-gray-600 text-white font-bold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all inline-block"> ← Kembali ke Materi </a>
+     </div>
+    </div>
+   </header><!-- Content -->
+   <main class="max-w-5xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl shadow-xl p-8"><!-- Header LKPD -->
+     <div class="text-center mb-8 pb-6 border-b-4 border-orange-500">
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">📝 LEMBAR KERJA PESERTA DIDIK</h2>
+      <p class="text-xl text-gray-600">Basis Data - SQL (DDL &amp; DML)</p>
+      <p class="text-gray-500 mt-2">Kelas XI - Rekayasa Perangkat Lunak</p>
+     </div><!-- Identitas Kelompok -->
+     <div class="bg-blue-50 p-6 rounded-lg mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Identitas Kelompok</h3>
+      <div class="grid md:grid-cols-2 gap-4">
+       <div><label class="block text-gray-700 font-semibold mb-2">Nama Kelompok:</label> <input type="text" id="nama_kelompok" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2" placeholder="Contoh: Kelompok Database Squad">
+       </div>
+       <div><label class="block text-gray-700 font-semibold mb-2">Kelas:</label> <input type="text" id="kelas_kelompok" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2" placeholder="Contoh: XI RPL 1">
+       </div>
+       <div class="md:col-span-2"><label class="block text-gray-700 font-semibold mb-2">Anggota Kelompok:</label> <textarea id="anggota_kelompok" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2" rows="3" placeholder="Tuliskan nama-nama anggota kelompok (pisahkan dengan enter)
+Contoh:
+1. Budi Santoso
+2. Siti Rahma
+3. Ahmad Hidayat"></textarea>
+       </div>
+       <div><label class="block text-gray-700 font-semibold mb-2">Tanggal:</label> <input type="date" id="tanggal_lkpd" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2">
+       </div>
+      </div>
+     </div><!-- Model Pembelajaran -->
+     <div class="bg-gradient-to-r from-indigo-100 to-purple-100 border-2 border-indigo-400 p-6 rounded-lg mb-8">
+      <div class="flex items-center gap-3 mb-3">
+       <div class="bg-indigo-600 text-white p-3 rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewbox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+       </div>
+       <div>
+        <h3 class="text-xl font-bold text-indigo-900">Model Pembelajaran</h3>
+        <p class="text-2xl font-bold text-indigo-600">PROJECT BASED LEARNING (PjBL)</p>
+       </div>
+      </div>
+      <div class="bg-white bg-opacity-60 rounded-lg p-4 mt-4">
+       <p class="text-gray-800 leading-relaxed"><strong>Project Based Learning</strong> adalah model pembelajaran yang menggunakan proyek/kegiatan sebagai media pembelajaran untuk mencapai kompetensi. Peserta didik melakukan eksplorasi, penilaian, interpretasi, sintesis, dan informasi untuk menghasilkan berbagai bentuk hasil belajar melalui kerja kelompok.</p>
+      </div>
+     </div><!-- Kompetensi -->
+     <div class="bg-purple-50 p-6 rounded-lg mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-3">🎯 Kompetensi Dasar</h3>
+      <p class="text-gray-700 leading-relaxed">Peserta didik mampu memahami dan menerapkan perintah SQL untuk membuat, mengubah, dan mengelola database serta tabel (DDL), serta mampu memanipulasi data dengan operasi INSERT, SELECT, UPDATE, dan DELETE (DML).</p>
+     </div><!-- Tujuan Pembelajaran -->
+     <div class="bg-green-50 p-6 rounded-lg mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-3">✅ Tujuan Pembelajaran</h3>
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+       <li>Peserta didik dapat membuat database dan tabel menggunakan perintah DDL</li>
+       <li>Peserta didik dapat mengubah struktur tabel dengan perintah ALTER TABLE</li>
+       <li>Peserta didik dapat menambahkan data ke dalam tabel menggunakan INSERT</li>
+       <li>Peserta didik dapat menampilkan data dengan berbagai kondisi menggunakan SELECT</li>
+       <li>Peserta didik dapat mengubah dan menghapus data dengan UPDATE dan DELETE</li>
+      </ol>
+     </div><!-- Petunjuk Umum -->
+     <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg mb-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-3">📋 Petunjuk Pengerjaan</h3>
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+       <li>Baca setiap pertanyaan dengan teliti</li>
+       <li>Kerjakan soal secara berurutan</li>
+       <li>Tuliskan query SQL Anda pada kolom jawaban yang tersedia</li>
+       <li>Uji setiap query di MySQL/phpMyAdmin untuk memastikan hasilnya benar</li>
+       <li>Jawaban dapat diketik langsung pada form atau ditulis di buku</li>
+      </ol>
+     </div><!-- Bagian A: DDL -->
+     <div class="mb-8 print-break">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 rounded-t-lg">
+       <h3 class="text-2xl font-bold">BAGIAN A: DATA DEFINITION LANGUAGE (DDL)</h3>
+      </div>
+      <div class="border-4 border-blue-600 rounded-b-lg p-6"><!-- Soal 1 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg">1</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Buatlah database dengan nama <code class="bg-gray-200 px-2 py-1 rounded">db_sekolah</code></p>
+          <p class="text-gray-600 text-sm mb-3">Tuliskan perintah SQL untuk membuat database baru!</p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-blue-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query SQL Anda di sini..."></textarea>
+        </div>
+       </div><!-- Soal 2 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg">2</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Buatlah tabel <code class="bg-gray-200 px-2 py-1 rounded">siswa</code> dengan struktur berikut:</p>
+          <div class="bg-gray-50 p-4 rounded-lg mt-3">
+           <table class="w-full text-sm">
+            <thead class="bg-gray-200">
+             <tr>
+              <th class="border border-gray-300 px-3 py-2 text-left">Nama Kolom</th>
+              <th class="border border-gray-300 px-3 py-2 text-left">Tipe Data</th>
+              <th class="border border-gray-300 px-3 py-2 text-left">Keterangan</th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td class="border border-gray-300 px-3 py-2">nis</td>
+              <td class="border border-gray-300 px-3 py-2">VARCHAR(10)</td>
+              <td class="border border-gray-300 px-3 py-2">Primary Key</td>
+             </tr>
+             <tr>
+              <td class="border border-gray-300 px-3 py-2">nama_lengkap</td>
+              <td class="border border-gray-300 px-3 py-2">VARCHAR(100)</td>
+              <td class="border border-gray-300 px-3 py-2">Not Null</td>
+             </tr>
+             <tr>
+              <td class="border border-gray-300 px-3 py-2">jenis_kelamin</td>
+              <td class="border border-gray-300 px-3 py-2">ENUM('L','P')</td>
+              <td class="border border-gray-300 px-3 py-2">-</td>
+             </tr>
+             <tr>
+              <td class="border border-gray-300 px-3 py-2">tanggal_lahir</td>
+              <td class="border border-gray-300 px-3 py-2">DATE</td>
+              <td class="border border-gray-300 px-3 py-2">-</td>
+             </tr>
+             <tr>
+              <td class="border border-gray-300 px-3 py-2">alamat</td>
+              <td class="border border-gray-300 px-3 py-2">TEXT</td>
+              <td class="border border-gray-300 px-3 py-2">-</td>
+             </tr>
+             <tr>
+              <td class="border border-gray-300 px-3 py-2">kelas</td>
+              <td class="border border-gray-300 px-3 py-2">VARCHAR(10)</td>
+              <td class="border border-gray-300 px-3 py-2">-</td>
+             </tr>
+            </tbody>
+           </table>
+          </div>
+         </div>
+        </div>
+        <div class="ml-16 mt-4"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-blue-300 rounded-lg p-3 font-mono text-sm" rows="6" placeholder="Tulis query CREATE TABLE di sini..."></textarea>
+        </div>
+       </div><!-- Soal 3 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg">3</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Tambahkan kolom baru pada tabel siswa:</p>
+          <p class="text-gray-600 mb-2">Nama kolom: <code class="bg-gray-200 px-2 py-1 rounded">no_telepon</code>, Tipe data: <code class="bg-gray-200 px-2 py-1 rounded">VARCHAR(15)</code></p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-blue-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query ALTER TABLE di sini..."></textarea>
+        </div>
+       </div><!-- Soal 4 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg">4</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Ubah tipe data kolom <code class="bg-gray-200 px-2 py-1 rounded">kelas</code> menjadi <code class="bg-gray-200 px-2 py-1 rounded">VARCHAR(15)</code></p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-blue-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query MODIFY COLUMN di sini..."></textarea>
+        </div>
+       </div><!-- Soal 5 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg">5</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Tuliskan perintah untuk melihat struktur tabel siswa</p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-blue-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query untuk melihat struktur tabel..."></textarea>
+        </div>
+       </div>
+      </div>
+     </div><!-- Bagian B: DML -->
+     <div class="mb-8 print-break">
+      <div class="bg-gradient-to-r from-green-600 to-green-800 text-white p-4 rounded-t-lg">
+       <h3 class="text-2xl font-bold">BAGIAN B: DATA MANIPULATION LANGUAGE (DML)</h3>
+      </div>
+      <div class="border-4 border-green-600 rounded-b-lg p-6"><!-- Soal 6 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-green-600 text-white font-bold px-4 py-2 rounded-lg">6</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Tambahkan 3 data siswa ke dalam tabel dengan informasi berikut:</p>
+          <div class="bg-gray-50 p-4 rounded-lg mt-3 space-y-3">
+           <div class="border-l-4 border-green-500 pl-3">
+            <p class="font-semibold">Siswa 1:</p>
+            <p class="text-sm">NIS: 2024001, Nama: Budi Santoso, JK: L, Tanggal Lahir: 2008-05-15, Alamat: Jl. Merdeka No. 10, Kelas: XI RPL 1</p>
+           </div>
+           <div class="border-l-4 border-green-500 pl-3">
+            <p class="font-semibold">Siswa 2:</p>
+            <p class="text-sm">NIS: 2024002, Nama: Siti Rahma, JK: P, Tanggal Lahir: 2008-08-20, Alamat: Jl. Sudirman No. 25, Kelas: XI RPL 1</p>
+           </div>
+           <div class="border-l-4 border-green-500 pl-3">
+            <p class="font-semibold">Siswa 3:</p>
+            <p class="text-sm">NIS: 2024003, Nama: Ahmad Hidayat, JK: L, Tanggal Lahir: 2008-03-10, Alamat: Jl. Pahlawan No. 5, Kelas: XI RPL 2</p>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="ml-16 mt-4"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-green-300 rounded-lg p-3 font-mono text-sm" rows="6" placeholder="Tulis query INSERT untuk 3 data siswa..."></textarea>
+        </div>
+       </div><!-- Soal 7 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-green-600 text-white font-bold px-4 py-2 rounded-lg">7</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Tampilkan semua data siswa yang ada di tabel</p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-green-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query SELECT di sini..."></textarea>
+        </div>
+       </div><!-- Soal 8 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-green-600 text-white font-bold px-4 py-2 rounded-lg">8</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Tampilkan data siswa yang kelasnya <code class="bg-gray-200 px-2 py-1 rounded">XI RPL 1</code></p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-green-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query SELECT dengan WHERE..."></textarea>
+        </div>
+       </div><!-- Soal 9 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-green-600 text-white font-bold px-4 py-2 rounded-lg">9</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Ubah kelas siswa dengan NIS <code class="bg-gray-200 px-2 py-1 rounded">2024001</code> menjadi <code class="bg-gray-200 px-2 py-1 rounded">XI RPL 2</code></p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-green-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query UPDATE di sini..."></textarea>
+        </div>
+       </div><!-- Soal 10 -->
+       <div class="mb-8">
+        <div class="flex gap-3 mb-3"><span class="bg-green-600 text-white font-bold px-4 py-2 rounded-lg">10</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Hapus data siswa dengan NIS <code class="bg-gray-200 px-2 py-1 rounded">2024003</code></p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-green-300 rounded-lg p-3 font-mono text-sm" rows="2" placeholder="Tulis query DELETE di sini..."></textarea>
+        </div>
+       </div>
+      </div>
+     </div><!-- Refleksi -->
+     <div class="mb-8">
+      <div class="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-4 rounded-t-lg">
+       <h3 class="text-2xl font-bold">📝 REFLEKSI &amp; PEMAHAMAN</h3>
+      </div>
+      <div class="border-4 border-orange-400 rounded-b-lg p-6"><!-- Soal Refleksi 1 -->
+       <div class="mb-8 pb-6 border-b-2 border-gray-200">
+        <div class="flex gap-3 mb-3"><span class="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">1</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Apa dampak yang terjadi jika kita lupa menggunakan klausa WHERE saat menjalankan perintah UPDATE atau DELETE?</p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-orange-300 rounded-lg p-3" rows="5" placeholder="Tulis jawaban Anda di sini..."></textarea>
+        </div>
+       </div><!-- Soal Refleksi 2 -->
+       <div class="mb-8">
+        <div class="flex gap-3 mb-3"><span class="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">2</span>
+         <div class="flex-1">
+          <p class="text-gray-800 font-semibold text-lg mb-2">Dalam pengembangan aplikasi nyata, mana yang lebih sering dilakukan: mengubah struktur (DDL) atau mengubah isi data (DML)? Jelaskan alasannya.</p>
+         </div>
+        </div>
+        <div class="ml-16"><label class="block text-gray-700 font-semibold mb-2">Jawaban:</label> <textarea class="w-full border-2 border-orange-300 rounded-lg p-3" rows="5" placeholder="Tulis jawaban Anda di sini..."></textarea>
+        </div>
+       </div>
+      </div>
+     </div><!-- Footer LKPD -->
+     <div class="mt-8 pt-6 border-t-2 border-gray-300 text-center">
+      <p class="text-gray-600 mb-2">Selamat mengerjakan! 📚</p>
+      <p class="text-sm text-gray-500">Pastikan semua query telah diuji dan berjalan dengan baik di MySQL</p>
+     </div>
+    </div>
+   </main><!-- Footer -->
+   <footer class="bg-gray-900 text-white text-center py-6 mt-8 no-print">
+    <p>© 2024 Media Pembelajaran Basis Data - Kelas XI RPL</p>
+   </footer>
+  </div>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9bff3180c2dcfd36',t:'MTc2ODc1MDg1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
