@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran ERD: Derajat Kardinalitas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tab-btn.active {
+            border-bottom-color: #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+            background-color: #eff6ff;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-800 flex flex-col min-h-screen selection:bg-blue-100 selection:text-blue-700">
+
+    <!-- Sticky Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-200">
+                        <i class="fa-solid fa-diagram-project"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">Kardinalitas ERD</h1>
+                        <p class="text-xs text-slate-500 font-medium">Modul Media Pembelajaran Interaktif Basis Data</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Desktop) -->
+                <nav class="hidden md:flex space-x-1" id="desktop-nav">
+                    <button onclick="switchTab('materi')" id="nav-materi" class="tab-btn active px-4 py-2 text-sm font-medium text-slate-600 rounded-lg hover:text-blue-600 transition duration-150 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-xs"></i> Materi Konsep
+                    </button>
+                    <button onclick="switchTab('visualisator')" id="nav-visualisator" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 rounded-lg hover:text-blue-600 transition duration-150 flex items-center gap-2">
+                        <i class="fa-solid fa-database text-xs"></i> Visualisator Tabel
+                    </button>
+                    <button onclick="switchTab('wizard')" id="nav-wizard" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 rounded-lg hover:text-blue-600 transition duration-150 flex items-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> Wizard 2 Pertanyaan
+                    </button>
+                    <button onclick="switchTab('latihan')" id="nav-latihan" class="tab-btn px-4 py-2 text-sm font-medium text-slate-600 rounded-lg hover:text-blue-600 transition duration-150 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-xs"></i> Latihan & Tantangan
+                    </button>
+                </nav>
+
+                <!-- Mobile menu toggle -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1">
+            <button onclick="switchTab('materi')" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100 flex items-center gap-3">
+                <i class="fa-solid fa-book-open text-blue-600"></i> Materi Konsep
+            </button>
+            <button onclick="switchTab('visualisator')" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100 flex items-center gap-3">
+                <i class="fa-solid fa-database text-emerald-600"></i> Visualisator Tabel
+            </button>
+            <button onclick="switchTab('wizard')" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100 flex items-center gap-3">
+                <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Wizard 2 Pertanyaan
+            </button>
+            <button onclick="switchTab('latihan')" class="w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100 flex items-center gap-3">
+                <i class="fa-solid fa-pen-to-square text-amber-600"></i> Latihan & Tantangan
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: MATERI KONSEP -->
+        <section id="tab-materi" class="tab-content animate-fade-in block">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-6 sm:p-8 text-white shadow-lg mb-8">
+                <div class="max-w-3xl">
+                    <span class="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3 py-1 rounded-full inline-block mb-3">Basis Data - ERD</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Memahami Derajat Kardinalitas</h2>
+                    <p class="mt-2 text-blue-100 text-sm sm:text-base leading-relaxed">
+                        Kardinalitas menentukan aturan berapa banyak instance data dalam suatu entitas yang dapat atau harus berhubungan dengan entitas lain.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button onclick="scrollToSection('materi-4-jenis')" class="bg-white text-blue-700 hover:bg-blue-50 font-semibold px-4 py-2 rounded-xl text-sm transition shadow-sm">
+                            <i class="fa-solid fa-list-check mr-1"></i> Pelajari 4 Jenis Kardinalitas
+                        </button>
+                        <button onclick="switchTab('wizard')" class="bg-blue-700/60 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl text-sm transition border border-white/20">
+                            <i class="fa-solid fa-lightbulb mr-1"></i> Coba Wizard Analisis
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Cards Summary -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">1 : 1</span>
+                        <i class="fa-solid fa-id-card text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">One to One</h3>
+                    <p class="text-xs text-slate-500 mt-1">1 instance A terhubung dengan tepat 1 instance B.</p>
+                    <div class="mt-3 text-xs font-semibold text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        Contoh: Siswa ↔ Kartu Pelajar
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">1 : N</span>
+                        <i class="fa-solid fa-users-rectangle text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">One to Many</h3>
+                    <p class="text-xs text-slate-500 mt-1">1 instance A terhubung dengan banyak instance B.</p>
+                    <div class="mt-3 text-xs font-semibold text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        Contoh: Kelas ↔ Siswa
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-200">N : 1</span>
+                        <i class="fa-solid fa-arrow-left-long text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">Many to One</h3>
+                    <p class="text-xs text-slate-500 mt-1">Banyak instance A terhubung dengan 1 instance B.</p>
+                    <div class="mt-3 text-xs font-semibold text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        Contoh: Siswa ↔ Kelas
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-md border border-purple-200">M : N</span>
+                        <i class="fa-solid fa-people-arrows text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800">Many to Many</h3>
+                    <p class="text-xs text-slate-500 mt-1">Banyak instance A terhubung dengan banyak instance B.</p>
+                    <div class="mt-3 text-xs font-semibold text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                        Contoh: Siswa ↔ Ekstrakurikuler
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Chapters -->
+            <div class="space-y-6">
+                <!-- Section 1 & 2 -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold">1</span>
+                        Pengertian & Pentingnya Kardinalitas
+                    </h3>
+                    <div class="mt-3 text-sm text-slate-600 space-y-3 leading-relaxed">
+                        <p>
+                            <strong class="text-slate-800">Kardinalitas (cardinality)</strong> adalah aturan yang menunjukkan berapa banyak instance dari suatu entitas yang dapat atau harus berhubungan dengan instance entitas lainnya.
+                        </p>
+                        <p>
+                            Sederhananya, kardinalitas menjawab pertanyaan: <span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded font-medium">"Satu data di entitas A dapat berhubungan dengan berapa banyak data di entitas B?"</span>
+                        </p>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-4">
+                            <h4 class="font-bold text-slate-700 text-xs uppercase tracking-wider mb-2">Mengapa Kardinalitas Sangat Penting?</h4>
+                            <p class="text-xs text-slate-600">
+                                Memahami bedanya antara <code class="bg-slate-200 px-1 rounded">1:1</code> (Siswa ↔ Kartu Pelajar) dan <code class="bg-slate-200 px-1 rounded">1:N</code> (Kelas ↔ Siswa) sangat krusial saat membentuk struktur tabel dan meletakkan kunci asing (Foreign Key) di database relasional.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3 & 4 & 5 & 6 -->
+                <div id="materi-4-jenis" class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 mb-4">
+                        <span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm font-bold">2</span>
+                        Pendalaman 4 Bentuk Kardinalitas
+                    </h3>
+
+                    <!-- Interactive Accordion Tabs for 4 Cardinalities -->
+                    <div class="space-y-4">
+                        <!-- 1:1 -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden">
+                            <div class="bg-slate-50 p-4 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="toggleAccordion('acc-11')">
+                                <span class="font-bold text-slate-800 flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded text-xs">1 : 1</span> One to One (Satu ke Satu)
+                                </span>
+                                <i id="acc-11-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                            </div>
+                            <div id="acc-11" class="p-4 bg-white hidden border-t border-slate-200 text-sm text-slate-600 space-y-3">
+                                <p>Satu instance entitas A berhubungan dengan tepat satu instance entitas B, dan sebaliknya.</p>
+                                <div class="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100 text-xs">
+                                    <strong>Contoh Kasus:</strong> 1 Siswa memiliki 1 Kartu Pelajar.
+                                </div>
+                                <p class="text-xs text-slate-500">
+                                    <strong>Penting:</strong> Kardinalitas ditentukan berdasarkan aturan bisnis sistem (business rules), bukan sekadar asumsi pribadi.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 1:N & N:1 -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden">
+                            <div class="bg-slate-50 p-4 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="toggleAccordion('acc-1n')">
+                                <span class="font-bold text-slate-800 flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">1 : N / N : 1</span> One to Many / Many to One
+                                </span>
+                                <i id="acc-1n-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                            </div>
+                            <div id="acc-1n" class="p-4 bg-white hidden border-t border-slate-200 text-sm text-slate-600 space-y-3">
+                                <p>Satu instance entitas A dapat berhubungan dengan banyak instance entitas B.</p>
+                                <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-100 text-xs">
+                                    <strong>Catatan Kunci:</strong> <code class="bg-blue-100 px-1 rounded">1:N</code> dan <code class="bg-blue-100 px-1 rounded">N:1</code> bukanlah dua hubungan yang berbeda! Keduanya hanya sudut pandang membaca yang dibalik.
+                                </div>
+                                <ul class="list-disc list-inside text-xs space-y-1 text-slate-600 pl-2">
+                                    <li>Membaca dari KELAS → SISWA = <strong>1 : N</strong> (Satu kelas memiliki banyak siswa)</li>
+                                    <li>Membaca dari SISWA → KELAS = <strong>N : 1</strong> (Banyak siswa berada di satu kelas)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- M:N -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden">
+                            <div class="bg-slate-50 p-4 flex justify-between items-center cursor-pointer hover:bg-slate-100 transition" onclick="toggleAccordion('acc-mn')">
+                                <span class="font-bold text-slate-800 flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">M : N</span> Many to Many (Banyak ke Banyak)
+                                </span>
+                                <i id="acc-mn-icon" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+                            </div>
+                            <div id="acc-mn" class="p-4 bg-white hidden border-t border-slate-200 text-sm text-slate-600 space-y-3">
+                                <p>Banyak instance entitas A dapat berhubungan dengan banyak instance entitas B.</p>
+                                <p class="text-xs">
+                                    <strong>Contoh:</strong> Seorang siswa dapat mengikuti beberapa ekstrakurikuler, dan satu ekstrakurikuler diikuti banyak siswa.
+                                </p>
+                                <div class="p-3 bg-purple-50 rounded-lg border border-purple-100 text-xs text-purple-900">
+                                    <i class="fa-solid fa-lightbulb text-purple-600 mr-1"></i>
+                                    Dalam database relasional, hubungan <strong>M:N wajib dipecah</strong> menggunakan <strong>Tabel Penghubung (Junction/Associative Table)</strong> menjadi dua hubungan <code class="bg-purple-200 px-1 rounded font-mono">1:N</code>!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 7 & 8: Junction table explanation -->
+                <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-xl p-6 shadow-md">
+                    <div class="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-diagram-nested"></i> Konsep Penting Database
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Mengapa M:N Membutuhkan Tabel Penghubung?</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                        Database tidak dapat menyimpan daftar multiple-values secara langsung dalam satu sel tanpa merusak aturan normalisasi. Oleh karena itu, kita memecah M:N menjadi dua hubungan 1:N melalui entitas/tabel penghubung.
+                    </p>
+                    
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10 text-xs font-mono flex flex-col md:flex-row items-center justify-around gap-4 text-center">
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 w-full md:w-auto">
+                            <span class="text-emerald-400 font-bold block">SISWA</span>
+                            <span class="text-slate-400 text-[10px]">PK: NIS</span>
+                        </div>
+                        <div class="text-indigo-300 font-bold">
+                            1 ─── N
+                        </div>
+                        <div class="bg-indigo-900/80 p-3 rounded-lg border border-indigo-500/50 w-full md:w-auto">
+                            <span class="text-amber-300 font-bold block">KEIKUTSERTAAN</span>
+                            <span class="text-slate-300 text-[10px]">FK: NIS, ID_Ekskul</span>
+                        </div>
+                        <div class="text-indigo-300 font-bold">
+                            N ─── 1
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 w-full md:w-auto">
+                            <span class="text-purple-400 font-bold block">EKSTRAKURIKULER</span>
+                            <span class="text-slate-400 text-[10px]">PK: ID_Ekskul</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: VISUALISATOR TABEL & DATA -->
+        <section id="tab-visualisator" class="tab-content animate-fade-in hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Visualisator Data & Instance</h2>
+                        <p class="text-xs text-slate-500">Lihat bagaimana baris data dalam tabel terhubung secara nyata berdasarkan kardinalitasnya.</p>
+                    </div>
+                    <!-- Controls -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="renderVisualizer('11')" id="btn-vis-11" class="vis-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm transition">
+                            1 : 1 (Siswa ↔ Kartu)
+                        </button>
+                        <button onclick="renderVisualizer('1n')" id="btn-vis-1n" class="vis-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            1 : N (Kelas ↔ Siswa)
+                        </button>
+                        <button onclick="renderVisualizer('mn')" id="btn-vis-mn" class="vis-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            M : N (Siswa ↔ Ekskul)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active Visualizer Viewport -->
+                <div id="vis-display" class="mt-6">
+                    <!-- Dynamic Content Inserted via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: WIZARD 2 PERTANYAAN -->
+        <section id="tab-wizard" class="tab-content animate-fade-in hidden">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm max-w-3xl mx-auto">
+                <div class="text-center max-w-lg mx-auto mb-8">
+                    <span class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl inline-flex items-center justify-center text-xl font-bold mb-3">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </span>
+                    <h2 class="text-2xl font-bold text-slate-900">Wizard Analisis 2 Pertanyaan</h2>
+                    <p class="text-xs text-slate-500 mt-1">Jangan menghafal diagram! Gunakan pola dua pertanyaan standar ini untuk menentukan kardinalitas entitas apapun secara akurat.</p>
+                </div>
+
+                <!-- Wizard Form Step 1: Input Entities -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 mb-6">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Langkah 1: Tentukan Dua Entitas</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Entitas A</label>
+                            <input type="text" id="wizard-entA" value="GURU" placeholder="Contoh: GURU" class="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase font-bold text-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Entitas B</label>
+                            <input type="text" id="wizard-entB" value="MATA_PELAJARAN" placeholder="Contoh: MATA_PELAJARAN" class="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 uppercase font-bold text-slate-800">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Questions -->
+                <div class="space-y-4 mb-6">
+                    <!-- Q1 -->
+                    <div class="p-4 border border-slate-200 rounded-xl bg-white shadow-xs">
+                        <label class="block text-sm font-bold text-slate-800 mb-2">
+                            Pertanyaan 1: "Satu <span class="text-blue-600 entity-A-label">GURU</span> dapat terhubung dengan berapa <span class="text-purple-600 entity-B-label">MATA_PELAJARAN</span>?"
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-blue-50">
+                                <input type="radio" name="q1" value="1" onchange="calculateWizard()" class="text-blue-600"> Tepat Satu (1)
+                            </label>
+                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-blue-50">
+                                <input type="radio" name="q1" value="N" checked onchange="calculateWizard()" class="text-blue-600"> Banyak (N)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-4 border border-slate-200 rounded-xl bg-white shadow-xs">
+                        <label class="block text-sm font-bold text-slate-800 mb-2">
+                            Pertanyaan 2: "Satu <span class="text-purple-600 entity-B-label">MATA_PELAJARAN</span> dapat terhubung dengan berapa <span class="text-blue-600 entity-A-label">GURU</span>?"
+                        </label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-blue-50">
+                                <input type="radio" name="q2" value="1" onchange="calculateWizard()" class="text-blue-600"> Tepat Satu (1)
+                            </label>
+                            <label class="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-blue-50">
+                                <input type="radio" name="q2" value="M" checked onchange="calculateWizard()" class="text-blue-600"> Banyak (M)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Box -->
+                <div id="wizard-result" class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-2xl p-6 text-center">
+                    <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Hasil Kardinalitas:</span>
+                    <div id="wizard-card-title" class="text-2xl font-black text-purple-900 my-2">M : N (Many to Many)</div>
+                    <p id="wizard-card-desc" class="text-xs text-slate-600 max-w-md mx-auto">
+                        Satu GURU dapat mengajar banyak MATA_PELAJARAN, dan satu MATA_PELAJARAN dapat diajar oleh banyak GURU.
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-purple-100 flex items-center justify-center gap-3 font-mono text-sm font-bold text-slate-800">
+                        <span class="bg-white px-3 py-1.5 rounded-lg border border-purple-200 shadow-xs entity-A-label">GURU</span>
+                        <span id="wizard-diagram-symbol" class="text-purple-600 bg-purple-100 px-2 py-1 rounded">M ────── N</span>
+                        <span class="bg-white px-3 py-1.5 rounded-lg border border-purple-200 shadow-xs entity-B-label">MATA_PELAJARAN</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: LATIHAN & TANTANGAN ANALISIS -->
+        <section id="tab-latihan" class="tab-content animate-fade-in hidden">
+            <div class="space-y-8 max-w-4xl mx-auto">
+                <!-- Part 1: Latihan Cepat -->
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">1</span>
+                                Latihan Cepat Kardinalitas
+                            </h2>
+                            <p class="text-xs text-slate-500">Pilihlah kardinalitas yang tepat berdasarkan pertanyaan kasus berikut.</p>
+                        </div>
+                        <span id="quiz-score" class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full border border-slate-200">
+                            Skor: 0 / 4
+                        </span>
+                    </div>
+
+                    <div id="quiz-container" class="space-y-6">
+                        <!-- Questions dynamically rendered or static -->
+                    </div>
+                </div>
+
+                <!-- Part 2: Tantangan Analisis Studio -->
+                <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="border-b border-slate-100 pb-4 mb-6">
+                        <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">Studi Kasus Lengkap</span>
+                        <h2 class="text-xl font-bold text-slate-900 mt-2">Tantangan Analisis ERD Sekolah</h2>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-3 text-xs sm:text-sm text-slate-700 leading-relaxed italic">
+                            "Sebuah sekolah memiliki beberapa kelas. Setiap kelas memiliki banyak siswa. Setiap siswa dapat mengikuti beberapa ekstrakurikuler. Setiap ekstrakurikuler juga dapat diikuti oleh banyak siswa. Setiap siswa memiliki satu kartu pelajar."
+                        </div>
+                    </div>
+
+                    <!-- Interactive Challenge Inputs -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <!-- Challenge 1 -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-slate-50/50">
+                            <label class="block text-xs font-bold text-slate-700 mb-2">1. KELAS ── SISWA</label>
+                            <select id="challenge-q1" onchange="checkChallenge()" class="w-full text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 bg-white">
+                                <option value="">-- Pilih Kardinalitas --</option>
+                                <option value="1:1">1 : 1</option>
+                                <option value="1:N">1 : N</option>
+                                <option value="M:N">M : N</option>
+                            </select>
+                            <p id="challenge-q1-feedback" class="text-[11px] mt-2 hidden font-medium"></p>
+                        </div>
+
+                        <!-- Challenge 2 -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-slate-50/50">
+                            <label class="block text-xs font-bold text-slate-700 mb-2">2. SISWA ── EKSTRAKURIKULER</label>
+                            <select id="challenge-q2" onchange="checkChallenge()" class="w-full text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 bg-white">
+                                <option value="">-- Pilih Kardinalitas --</option>
+                                <option value="1:1">1 : 1</option>
+                                <option value="1:N">1 : N</option>
+                                <option value="M:N">M : N</option>
+                            </select>
+                            <p id="challenge-q2-feedback" class="text-[11px] mt-2 hidden font-medium"></p>
+                        </div>
+
+                        <!-- Challenge 3 -->
+                        <div class="p-4 border border-slate-200 rounded-xl bg-slate-50/50">
+                            <label class="block text-xs font-bold text-slate-700 mb-2">3. SISWA ── KARTU_PELAJAR</label>
+                            <select id="challenge-q3" onchange="checkChallenge()" class="w-full text-xs font-semibold px-3 py-2 rounded-lg border border-slate-300 bg-white">
+                                <option value="">-- Pilih Kardinalitas --</option>
+                                <option value="1:1">1 : 1</option>
+                                <option value="1:N">1 : N</option>
+                                <option value="M:N">M : N</option>
+                            </select>
+                            <p id="challenge-q3-feedback" class="text-[11px] mt-2 hidden font-medium"></p>
+                        </div>
+                    </div>
+
+                    <!-- ERD Generated Visual Output -->
+                    <div id="challenge-diagram-box" class="bg-slate-900 rounded-xl p-6 text-white hidden">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold text-emerald-400"><i class="fa-solid fa-circle-check"></i> Hasil Diagram Hubungan ERD Sekolah</span>
+                            <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">Tergambar Otomatis</span>
+                        </div>
+
+                        <div class="flex flex-col items-center justify-center space-y-4 py-4 font-mono text-xs sm:text-sm">
+                            <!-- KELAS -> SISWA -->
+                            <div class="flex items-center gap-3">
+                                <div class="px-4 py-2 bg-blue-900/60 border border-blue-500 rounded-lg text-blue-200 font-bold">KELAS</div>
+                                <div class="text-emerald-400 font-bold px-2 bg-slate-800 rounded">1 ──────── N</div>
+                                <div class="px-4 py-2 bg-emerald-900/60 border border-emerald-500 rounded-lg text-emerald-200 font-bold">SISWA</div>
+                            </div>
+
+                            <div class="h-4 border-l-2 border-dashed border-slate-700"></div>
+
+                            <!-- SISWA -> EKSTRAKURIKULER -->
+                            <div class="flex items-center gap-3">
+                                <div class="px-4 py-2 bg-emerald-900/60 border border-emerald-500 rounded-lg text-emerald-200 font-bold">SISWA</div>
+                                <div class="text-purple-400 font-bold px-2 bg-slate-800 rounded">M ──────── N</div>
+                                <div class="px-4 py-2 bg-purple-900/60 border border-purple-500 rounded-lg text-purple-200 font-bold">EKSTRAKURIKULER</div>
+                            </div>
+
+                            <div class="h-4 border-l-2 border-dashed border-slate-700"></div>
+
+                            <!-- SISWA -> KARTU PELAJAR -->
+                            <div class="flex items-center gap-3">
+                                <div class="px-4 py-2 bg-emerald-900/60 border border-emerald-500 rounded-lg text-emerald-200 font-bold">SISWA</div>
+                                <div class="text-amber-400 font-bold px-2 bg-slate-800 rounded">1 ──────── 1</div>
+                                <div class="px-4 py-2 bg-amber-900/60 border border-amber-500 rounded-lg text-amber-200 font-bold">KARTU_PELAJAR</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>Media Pembelajaran ERD Interaktif — Berbasis Rujukan Standar Basis Data Relasional</p>
+            <p class="mt-1 text-slate-400">Didukung oleh IBM Relational Database Model & OpenDSA ERD Notation Guidelines</p>
+        </div>
+    </footer>
+
+    <script>
+        // State management
+        const quizData = [
+            {
+                id: 'qA',
+                title: 'A. Satu jurusan memiliki banyak kelas.',
+                question: 'JURUSAN _____ KELAS',
+                options: [
+                    { val: '1:1', text: '1 : 1' },
+                    { val: '1:N', text: '1 : N', correct: true },
+                    { val: 'N:1', text: 'N : 1' },
+                    { val: 'M:N', text: 'M : N' }
+                ],
+                explanation: 'Satu jurusan memiliki banyak kelas (1:N).'
+            },
+            {
+                id: 'qB',
+                title: 'B. Banyak siswa berada dalam satu kelas.',
+                question: 'SISWA _____ KELAS',
+                options: [
+                    { val: '1:1', text: '1 : 1' },
+                    { val: '1:N', text: '1 : N' },
+                    { val: 'N:1', text: 'N : 1', correct: true },
+                    { val: 'M:N', text: 'M : N' }
+                ],
+                explanation: 'Jika dibaca dari sisi siswa ke kelas: banyak siswa berada di satu kelas (N:1).'
+            },
+            {
+                id: 'qC',
+                title: 'C. Satu siswa memiliki satu NIS (sebagai entitas/objek terpisah).',
+                question: 'SISWA _____ NIS',
+                options: [
+                    { val: '1:1', text: '1 : 1', correct: true },
+                    { val: '1:N', text: '1 : N' },
+                    { val: 'N:1', text: 'N : 1' },
+                    { val: 'M:N', text: 'M : N' }
+                ],
+                explanation: 'Satu siswa tepat memiliki satu NIS (1:1 konseptual, walau dalam DB nyata NIS umumnya berupa atribut primary key).'
+            },
+            {
+                id: 'qD',
+                title: 'D. Banyak siswa mengikuti banyak ekstrakurikuler.',
+                question: 'SISWA _____ EKSTRAKURIKULER',
+                options: [
+                    { val: '1:1', text: '1 : 1' },
+                    { val: '1:N', text: '1 : N' },
+                    { val: 'N:1', text: 'N : 1' },
+                    { val: 'M:N', text: 'M : N', correct: true }
+                ],
+                explanation: 'Satu siswa bisa ikut banyak ekskul, dan satu ekskul bisa diikuti banyak siswa (M:N).'
+            }
+        ];
+
+        let quizUserAnswers = {};
+
+        // Navigation
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            const target = document.getElementById('tab-' + tabId);
+            const targetBtn = document.getElementById('nav-' + tabId);
+            
+            if (target) target.classList.remove('hidden');
+            if (targetBtn) targetBtn.classList.add('active');
+
+            // Close mobile menu
+            document.getElementById('mobile-menu').classList.add('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleAccordion(accId) {
+            const content = document.getElementById(accId);
+            const icon = document.getElementById(accId + '-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function scrollToSection(secId) {
+            const el = document.getElementById(secId);
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderVisualizer(type) {
+            // Update button styles
+            document.querySelectorAll('.vis-btn').forEach(btn => {
+                btn.className = 'vis-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+            });
+            document.getElementById('btn-vis-' + type).className = 'vis-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-sm transition';
+
+            const container = document.getElementById('vis-display');
+
+            if (type === '11') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-emerald-600 text-base"></i>
+                            <span><strong>Kardinalitas 1 : 1</strong> — Setiap 1 NIS terhubung dengan tepat 1 ID Kartu.</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Table 1 -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                <div class="bg-slate-800 text-white px-4 py-2 font-bold text-xs flex justify-between">
+                                    <span>Tabel: SISWA</span>
+                                    <span class="text-slate-400 font-mono">Entitas A</span>
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                        <tr><th class="p-2.5 font-bold">NIS (PK)</th><th class="p-2.5">Nama</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr class="hover:bg-blue-50/50"><td class="p-2.5 font-mono text-blue-600 font-bold">1001</td><td class="p-2.5">Andi</td></tr>
+                                        <tr class="hover:bg-blue-50/50"><td class="p-2.5 font-mono text-blue-600 font-bold">1002</td><td class="p-2.5">Budi</td></tr>
+                                        <tr class="hover:bg-blue-50/50"><td class="p-2.5 font-mono text-blue-600 font-bold">1003</td><td class="p-2.5">Citra</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Table 2 -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                <div class="bg-slate-800 text-white px-4 py-2 font-bold text-xs flex justify-between">
+                                    <span>Tabel: KARTU_PELAJAR</span>
+                                    <span class="text-slate-400 font-mono">Entitas B</span>
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                        <tr><th class="p-2.5 font-bold">ID_Kartu (PK)</th><th class="p-2.5 font-bold">NIS (FK)</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr class="hover:bg-emerald-50/50"><td class="p-2.5 font-mono">KP001</td><td class="p-2.5 font-mono text-blue-600 font-bold">1001</td></tr>
+                                        <tr class="hover:bg-emerald-50/50"><td class="p-2.5 font-mono">KP002</td><td class="p-2.5 font-mono text-blue-600 font-bold">1002</td></tr>
+                                        <tr class="hover:bg-emerald-50/50"><td class="p-2.5 font-mono">KP003</td><td class="p-2.5 font-mono text-blue-600 font-bold">1003</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === '1n') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border border-blue-200 text-blue-800 p-3 rounded-xl text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-blue-600 text-base"></i>
+                            <span><strong>Kardinalitas 1 : N</strong> — Satu Kode_Kelas (misal: R1) digunakan oleh banyak siswa (Andi, Budi, Citra).</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Table 1 -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                <div class="bg-slate-800 text-white px-4 py-2 font-bold text-xs flex justify-between">
+                                    <span>Tabel: KELAS (Sisi 1)</span>
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                        <tr><th class="p-2.5 font-bold">Kode_Kelas (PK)</th><th class="p-2.5">Nama Kelas</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr class="bg-amber-50/60 font-bold"><td class="p-2.5 font-mono text-amber-700">R1</td><td class="p-2.5">XI RPL 1</td></tr>
+                                        <tr><td class="p-2.5 font-mono text-slate-600">R2</td><td class="p-2.5">XI RPL 2</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Table 2 -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                <div class="bg-slate-800 text-white px-4 py-2 font-bold text-xs flex justify-between">
+                                    <span>Tabel: SISWA (Sisi N)</span>
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 border-b border-slate-200 text-slate-700">
+                                        <tr><th class="p-2.5 font-bold">NIS (PK)</th><th class="p-2.5">Nama</th><th class="p-2.5 font-bold">Kode_Kelas (FK)</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr class="hover:bg-amber-50/50"><td class="p-2.5 font-mono">1001</td><td class="p-2.5">Andi</td><td class="p-2.5 font-mono font-bold text-amber-700 bg-amber-100/50">R1</td></tr>
+                                        <tr class="hover:bg-amber-50/50"><td class="p-2.5 font-mono">1002</td><td class="p-2.5">Budi</td><td class="p-2.5 font-mono font-bold text-amber-700 bg-amber-100/50">R1</td></tr>
+                                        <tr class="hover:bg-amber-50/50"><td class="p-2.5 font-mono">1003</td><td class="p-2.5">Citra</td><td class="p-2.5 font-mono font-bold text-amber-700 bg-amber-100/50">R1</td></tr>
+                                        <tr><td class="p-2.5 font-mono">1004</td><td class="p-2.5">Deni</td><td class="p-2.5 font-mono text-slate-600">R2</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'mn') {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-purple-50 border border-purple-200 text-purple-900 p-3 rounded-xl text-xs flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-arrows-split-up-and-left text-purple-600 text-base"></i>
+                                <span><strong>Kardinalitas M : N dipecah menjadi Tabel Penghubung!</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- 3 Tables grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Tabel Siswa -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                <div class="bg-slate-800 text-white px-3 py-2 font-bold text-xs">
+                                    SISWA (1)
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 text-slate-700">
+                                        <tr><th class="p-2">NIS</th><th class="p-2">Nama</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr><td class="p-2 font-mono font-bold text-blue-600">1001</td><td class="p-2">Andi</td></tr>
+                                        <tr><td class="p-2 font-mono font-bold text-blue-600">1002</td><td class="p-2">Budi</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Tabel KEIKUTSERTAAN (Junction) -->
+                            <div class="border-2 border-purple-400 rounded-xl overflow-hidden shadow-sm bg-purple-50/30">
+                                <div class="bg-purple-700 text-white px-3 py-2 font-bold text-xs flex justify-between">
+                                    <span>KEIKUTSERTAAN (Tabel Penghubung)</span>
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-purple-100 text-purple-900">
+                                        <tr><th class="p-2">NIS (FK)</th><th class="p-2">ID_Ekskul (FK)</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-purple-100">
+                                        <tr><td class="p-2 font-mono text-blue-600 font-bold">1001</td><td class="p-2 font-mono text-purple-700 font-bold">E01 (Futsal)</td></tr>
+                                        <tr><td class="p-2 font-mono text-blue-600 font-bold">1001</td><td class="p-2 font-mono text-purple-700 font-bold">E02 (Basket)</td></tr>
+                                        <tr><td class="p-2 font-mono text-blue-600 font-bold">1002</td><td class="p-2 font-mono text-purple-700 font-bold">E01 (Futsal)</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Tabel Ekstrakurikuler -->
+                            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                                <div class="bg-slate-800 text-white px-3 py-2 font-bold text-xs">
+                                    EKSTRAKURIKULER (1)
+                                </div>
+                                <table class="w-full text-xs text-left">
+                                    <thead class="bg-slate-100 text-slate-700">
+                                        <tr><th class="p-2">ID_Ekskul</th><th class="p-2">Nama Ekskul</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr><td class="p-2 font-mono font-bold text-purple-700">E01</td><td class="p-2">Futsal</td></tr>
+                                        <tr><td class="p-2 font-mono font-bold text-purple-700">E02</td><td class="p-2">Basket</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function calculateWizard() {
+            const entAInput = document.getElementById('wizard-entA').value.trim() || 'GURU';
+            const entBInput = document.getElementById('wizard-entB').value.trim() || 'MATA_PELAJARAN';
+
+            // Sync text labels
+            document.querySelectorAll('.entity-A-label').forEach(el => el.innerText = entAInput.toUpperCase());
+            document.querySelectorAll('.entity-B-label').forEach(el => el.innerText = entBInput.toUpperCase());
+
+            const q1Val = document.querySelector('input[name="q1"]:checked')?.value || 'N';
+            const q2Val = document.querySelector('input[name="q2"]:checked')?.value || 'M';
+
+            const cardTitle = document.getElementById('wizard-card-title');
+            const cardDesc = document.getElementById('wizard-card-desc');
+            const diagramSymbol = document.getElementById('wizard-diagram-symbol');
+
+            if (q1Val === '1' && q2Val === '1') {
+                cardTitle.innerText = '1 : 1 (One to One)';
+                cardDesc.innerText = `Satu ${entAInput} berhubungan dengan tepat satu ${entBInput}, dan satu ${entBInput} berhubungan dengan satu ${entAInput}.`;
+                diagramSymbol.innerText = '1 ────── 1';
+            } else if (q1Val === 'N' && q2Val === '1') {
+                cardTitle.innerText = '1 : N (One to Many)';
+                cardDesc.innerText = `Satu ${entAInput} berhubungan dengan banyak ${entBInput}, tetapi satu ${entBInput} berhubungan dengan satu ${entAInput}.`;
+                diagramSymbol.innerText = '1 ────── N';
+            } else if (q1Val === '1' && q2Val === 'M') {
+                cardTitle.innerText = 'N : 1 (Many to One)';
+                cardDesc.innerText = `Banyak ${entAInput} berhubungan dengan satu ${entBInput}. (Secara arah sebaliknya: Satu ${entBInput} berhubungan dengan banyak ${entAInput}).`;
+                diagramSymbol.innerText = 'N ────── 1';
+            } else {
+                cardTitle.innerText = 'M : N (Many to Many)';
+                cardDesc.innerText = `Banyak ${entAInput} berhubungan dengan banyak ${entBInput}. Hubungan ini memerlukan Tabel Penghubung pada database relasional!`;
+                diagramSymbol.innerText = 'M ────── N';
+            }
+        }
+
+        // Realtime entity input update listener
+        document.getElementById('wizard-entA').addEventListener('input', calculateWizard);
+        document.getElementById('wizard-entB').addEventListener('input', calculateWizard);
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = '';
+
+            quizData.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'p-5 border border-slate-200 rounded-xl bg-slate-50/30';
+                
+                let optionsHTML = '';
+                q.options.forEach(opt => {
+                    optionsHTML += `
+                        <button onclick="answerQuiz('${q.id}', '${opt.val}', ${opt.correct || false})" 
+                                id="btn-${q.id}-${opt.val}" 
+                                class="quiz-opt-btn-${q.id} px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold hover:border-blue-500 hover:bg-blue-50 transition text-slate-700 bg-white">
+                            ${opt.text}
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="font-bold text-sm text-slate-800 mb-1">${q.title}</div>
+                    <div class="font-mono text-xs text-blue-700 font-bold bg-blue-50 px-3 py-1.5 rounded-md inline-block mb-3 border border-blue-100">${q.question}</div>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        ${optionsHTML}
+                    </div>
+                    <div id="feedback-${q.id}" class="text-xs font-medium hidden p-2.5 rounded-lg"></div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        function answerQuiz(qId, val, isCorrect) {
+            quizUserAnswers[qId] = isCorrect;
+
+            // Highlight buttons
+            document.querySelectorAll(`.quiz-opt-btn-${qId}`).forEach(btn => {
+                btn.className = 'px-3 py-2 rounded-lg border border-slate-300 text-xs font-semibold transition text-slate-700 bg-white opacity-60';
+            });
+
+            const selectedBtn = document.getElementById(`btn-${qId}-${val}`);
+            const feedbackEl = document.getElementById(`feedback-${qId}`);
+
+            if (isCorrect) {
+                selectedBtn.className = 'px-3 py-2 rounded-lg border border-emerald-500 bg-emerald-100 text-emerald-800 text-xs font-bold shadow-xs';
+                feedbackEl.className = 'text-xs font-medium p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 block';
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>Benar!</strong> ${quizData.find(q=>q.id===qId).explanation}`;
+            } else {
+                selectedBtn.className = 'px-3 py-2 rounded-lg border border-red-500 bg-red-100 text-red-800 text-xs font-bold';
+                feedbackEl.className = 'text-xs font-medium p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-800 block';
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600 mr-1"></i> <strong>Belum Tepat.</strong> Coba analisis lagi hubungan dua entitas tersebut.`;
+            }
+
+            // Update total score
+            const scoreCount = Object.values(quizUserAnswers).filter(Boolean).length;
+            document.getElementById('quiz-score').innerText = `Skor: ${scoreCount} / ${quizData.length}`;
+        }
+
+        function checkChallenge() {
+            const q1 = document.getElementById('challenge-q1').value;
+            const q2 = document.getElementById('challenge-q2').value;
+            const q3 = document.getElementById('challenge-q3').value;
+
+            const f1 = document.getElementById('challenge-q1-feedback');
+            const f2 = document.getElementById('challenge-q2-feedback');
+            const f3 = document.getElementById('challenge-q3-feedback');
+
+            let allCorrect = true;
+
+            // Q1: KELAS - SISWA (1:N)
+            if (q1 === '1:N') {
+                f1.className = 'text-[11px] mt-2 font-bold text-emerald-600 block';
+                f1.innerText = '✓ Tepat! (1 Kelas : Banyak Siswa)';
+            } else if (q1 !== '') {
+                f1.className = 'text-[11px] mt-2 font-bold text-red-600 block';
+                f1.innerText = '✗ Kurang tepat. Satu kelas memiliki banyak siswa (1:N).';
+                allCorrect = false;
+            } else { f1.classList.add('hidden'); allCorrect = false; }
+
+            // Q2: SISWA - EKSTRAKURIKULER (M:N)
+            if (q2 === 'M:N') {
+                f2.className = 'text-[11px] mt-2 font-bold text-emerald-600 block';
+                f2.innerText = '✓ Tepat! (Banyak Siswa : Banyak Ekskul)';
+            } else if (q2 !== '') {
+                f2.className = 'text-[11px] mt-2 font-bold text-red-600 block';
+                f2.innerText = '✗ Kurang tepat. Siswa bisa ikut banyak ekskul dan sebaliknya (M:N).';
+                allCorrect = false;
+            } else { f2.classList.add('hidden'); allCorrect = false; }
+
+            // Q3: SISWA - KARTU_PELAJAR (1:1)
+            if (q3 === '1:1') {
+                f3.className = 'text-[11px] mt-2 font-bold text-emerald-600 block';
+                f3.innerText = '✓ Tepat! (1 Siswa : 1 Kartu Pelajar)';
+            } else if (q3 !== '') {
+                f3.className = 'text-[11px] mt-2 font-bold text-red-600 block';
+                f3.innerText = '✗ Kurang tepat. Setiap siswa punya 1 kartu pelajar (1:1).';
+                allCorrect = false;
+            } else { f3.classList.add('hidden'); allCorrect = false; }
+
+            // If all 3 are correct, reveal diagram box
+            const diagramBox = document.getElementById('challenge-diagram-box');
+            if (allCorrect) {
+                diagramBox.classList.remove('hidden');
+            } else {
+                diagramBox.classList.add('hidden');
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderVisualizer('11');
+            calculateWizard();
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
